@@ -8,7 +8,7 @@ A mesma solução processa qualquer parceiro, período ou número de variantes *
 
 ---
 
-## 1. Resultados em uma olhada
+## 1. Resultados 
 
 | Parceiro | Período | Variantes | Decisão | Confiança | Destaque analítico |
 |---|---|---|---|---|---|
