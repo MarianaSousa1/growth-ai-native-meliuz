@@ -1,18 +1,4 @@
-"""
-run.py — Ponto de entrada único da skill. Executa o fluxo completo:
-  ingest (saneamento) -> analyze (métricas/estatística/decisão)
-  -> report (dashboard HTML + PDF) -> registry (linha no CSV mestre).
 
-Não sobe nada para o Google Sheets: isso é feito pelo Claude via conector,
-porque a API do Google está fora da lista de domínios liberados do sandbox.
-Esta etapa deixa pronto o CSV mestre (registro_mestre.csv) para o Claude subir.
-
-Uso:
-  python run.py --csv <arquivo.csv> --nome "Nome do teste" \
-                [--descricao "..."] [--out <dir_saida>] [--master <master.csv>]
-
-Saída: imprime um JSON com os caminhos gerados e um resumo da decisão.
-"""
 
 import argparse, json, os, sys
 
