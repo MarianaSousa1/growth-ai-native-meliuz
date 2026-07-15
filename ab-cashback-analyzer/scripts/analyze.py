@@ -1,26 +1,3 @@
-"""
-analyze.py — Métricas, estatística e decisão para um teste A/B de cashback.
-
-Recebe o DataFrame limpo do ingest.py e devolve um dicionário serializável com:
-  - por_variante : agregados e métricas derivadas de cada variante
-  - series        : série diária por variante (para os gráficos)
-  - semanal       : agregação semanal por variante
-  - estatistica   : intervalos de confiança (bootstrap) e comparação da vencedora
-                    vs. a segunda colocada em lucro/comprador
-  - decisao       : veredito acionável (escalar / inconclusivo) + trade-off
-                    quando a variante mais lucrativa não é a de maior GMV
-
-Premissas explícitas (registradas na saída, campo 'premissas'):
-  - Não há coluna de usuários EXPOSTOS por variante, só de compradores. Logo,
-    taxa de conversão é impossível. Assumimos alocação de tráfego equilibrada e
-    usamos o DIA como unidade amostral, inferindo sobre médias diárias e sobre
-    métricas normalizadas (por comprador), que são robustas a diferença de volume.
-  - Métrica de decisão = LUCRO = comissão - cashback (definição do negócio).
-  - Não há grupo de controle; as variantes são comparadas entre si.
-
-Uso via CLI:
-  python analyze.py <arquivo.csv>   # imprime a análise em JSON
-"""
 
 import sys, json
 import numpy as np
