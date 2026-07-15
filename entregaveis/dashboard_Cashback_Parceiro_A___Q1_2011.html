@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cashback Parceiro A - Q1 2011 — Análise A/B Méliuz</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--grafite:#302c2c;--vermelho:#e81c3c;--rosa:#fe9dbf;--rosaclaro:#ffe8f3;--branco:#ffffff}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--branco);color:var(--grafite);font-family:Inter,system-ui,sans-serif;line-height:1.5}
+  .wrap{max-width:1120px;margin:0 auto;padding:32px 24px 64px}
+  h1,h2,h3{font-family:Sora,sans-serif;margin:0}
+  .eyebrow{font-family:Sora;font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-size:12px;color:var(--vermelho)}
+  header.top{border-bottom:2px solid var(--rosaclaro);padding-bottom:20px;margin-bottom:28px}
+  header.top h1{font-size:30px;font-weight:800;margin:6px 0 4px}
+  header.top .meta{color:#6b6666;font-size:14px}
+  /* HERO veredito */
+  .hero{background:var(--grafite);color:var(--branco);border-radius:20px;padding:30px 32px;margin-bottom:28px;
+         display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center}
+  .hero .q{font-family:Sora;font-weight:600;color:var(--rosa);font-size:15px;margin-bottom:10px}
+  .hero .answer{font-family:Sora;font-weight:800;font-size:40px;line-height:1.05}
+  .hero .just{color:#d9d4d4;font-size:14px;max-width:60ch;margin-top:10px}
+  .verdict{text-align:center;padding:16px 22px;border-radius:14px;font-family:Sora;font-weight:800;font-size:15px;white-space:nowrap}
+  .verdict small{display:block;font-weight:600;font-size:11px;opacity:.85;margin-top:4px}
+  .verdict.go{background:var(--vermelho);color:#fff}
+  .verdict.warn{background:var(--rosa);color:var(--grafite)}
+  .verdict.stop{background:#fff;color:var(--grafite);border:2px solid var(--rosa)}
+  /* cards */
+  .vgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:28px}
+  .vcard{border:1.5px solid var(--rosaclaro);border-radius:16px;padding:18px 18px 8px;background:#fff;position:relative}
+  .vcard.win{border-color:var(--accent);box-shadow:0 6px 22px rgba(232,28,60,.10)}
+  .vhead{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+  .vhead h3{font-size:18px;font-weight:700}
+  .vdot{width:11px;height:11px;border-radius:50%;background:var(--accent)}
+  .badge{margin-left:auto;background:var(--accent);color:#fff;font-family:Sora;font-weight:700;font-size:10px;
+          letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border-radius:20px}
+  .kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px}
+  .kpis>div{padding-bottom:8px}
+  .kpis span{font-family:Sora;font-weight:700;font-size:19px;display:block}
+  .kpis label{font-size:11px;color:#8a8585;text-transform:uppercase;letter-spacing:.04em}
+  /* panels */
+  .panel{background:#fff;border:1.5px solid var(--rosaclaro);border-radius:16px;padding:22px 24px;margin-bottom:22px}
+  .panel h2{font-size:17px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+  .tag{background:var(--rosaclaro);color:var(--vermelho);font-family:Sora;font-weight:700;font-size:11px;
+        letter-spacing:.05em;text-transform:uppercase;padding:4px 9px;border-radius:6px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  @media(max-width:820px){.grid2{grid-template-columns:1fr}.hero{grid-template-columns:1fr}}
+  .chartbox{position:relative;height:280px}
+  .caption{font-size:12.5px;color:#8a8585;margin-top:8px}
+  .tradeoff{border-color:var(--rosa);background:linear-gradient(0deg,var(--rosaclaro),#fff)}
+  .tradeoff.no-to{background:#fff}
+  .achados-list{margin:0;padding-left:0;list-style:none}
+  .achados-list li{position:relative;padding:12px 14px 12px 16px;margin-bottom:10px;background:var(--rosaclaro);
+    border-left:3px solid var(--vermelho);border-radius:8px;font-size:13.5px;color:#4a4646;line-height:1.5}
+  .achados-list li:last-child{margin-bottom:0}
+  .tradeoff-body{display:grid;grid-template-columns:260px 1fr;gap:22px;align-items:center;margin:16px 0 6px}
+  @media(max-width:820px){.tradeoff-body{grid-template-columns:1fr}}
+  .cambio{background:var(--grafite);color:#fff;border-radius:16px;padding:20px 22px;text-align:center}
+  .cambio label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--rosa);font-family:Sora;font-weight:600}
+  .cambio-val{font-family:Sora;font-weight:800;font-size:44px;line-height:1.05;margin:6px 0 8px;color:#fff}
+  .cambio small{font-size:12px;color:#d9d4d4;line-height:1.45}
+  .to-chart{height:210px}
+  .tgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px}
+  .tgrid>div{background:#fff;border:1px solid var(--rosaclaro);border-radius:12px;padding:14px}
+  .tgrid label{font-size:12px;color:#8a8585;display:block;margin-bottom:4px}
+  .tgrid b{font-family:Sora;font-size:22px}.tgrid small{display:block;color:#8a8585;margin-top:2px}
+  .stat{font-size:13.5px;color:#4a4646;background:var(--rosaclaro);border-radius:10px;padding:12px 14px;margin-top:12px}
+  .quality{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  @media(max-width:820px){.quality{grid-template-columns:1fr}}
+  .quality h4{font-family:Sora;font-size:13px;margin:0 0 6px;color:var(--grafite)}
+  .quality ul{margin:0;padding-left:18px;font-size:12.5px;color:#6b6666}
+  .qbar{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:14px}
+  .qbar div{font-family:Sora}.qbar b{font-size:22px;color:var(--vermelho)}
+  .qbar small{display:block;font-family:Inter;font-size:11px;color:#8a8585;text-transform:uppercase;letter-spacing:.04em}
+  footer{margin-top:36px;font-size:12px;color:#a9a4a4;text-align:center}
+</style></head><body><div class="wrap">
+
+<header class="top">
+  <div class="eyebrow">Méliuz · Growth · Análise de teste A/B de cashback</div>
+  <h1>Cashback Parceiro A - Q1 2011</h1>
+  <div class="meta">Parceiro(s): <b>Parceiro A</b> &nbsp;·&nbsp; Período: 2011-01-01 a 2011-04-02 (92 dias) &nbsp;·&nbsp; 3 variantes</div>
+</header>
+
+<div class="hero">
+  <div>
+    <div class="q">Qual variante de cashback escalar para 100% do tráfego?</div>
+    <div class="answer">Grupo 1</div>
+    <div class="just">Os dados indicam Grupo 1 como o de maior lucro por comprador, com diferença para Grupo 2 que se mantém consistente ao longo dos dias analisados.</div>
+  </div>
+  <div class="verdict go">ESCALAR<small>confiança alta</small></div>
+</div>
+
+<div class="vgrid">
+        <div class="vcard win" style="--accent:#e81c3c">
+          <div class="vhead"><span class="vdot"></span><h3>Grupo 1</h3><span class="badge">recomendada</span></div>
+          <div class="kpis">
+            <div><span>9.633</span><label>compradores</label></div>
+            <div><span>R$ 5.605.173</span><label>GMV</label></div>
+            <div><span>R$ 404.711</span><label>lucro</label></div>
+            <div><span>7.2%</span><label>margem</label></div>
+            <div><span>1.73</span><label>ROI</label></div>
+            <div><span>4.2%</span><label>taxa de cashback</label></div>
+            <div><span>R$ 582</span><label>ticket médio</label></div>
+          </div>
+        </div>
+        <div class="vcard " style="--accent:#302c2c">
+          <div class="vhead"><span class="vdot"></span><h3>Grupo 2</h3></div>
+          <div class="kpis">
+            <div><span>10.814</span><label>compradores</label></div>
+            <div><span>R$ 6.423.096</span><label>GMV</label></div>
+            <div><span>R$ 357.519</span><label>lucro</label></div>
+            <div><span>5.6%</span><label>margem</label></div>
+            <div><span>0.96</span><label>ROI</label></div>
+            <div><span>5.8%</span><label>taxa de cashback</label></div>
+            <div><span>R$ 594</span><label>ticket médio</label></div>
+          </div>
+        </div>
+        <div class="vcard " style="--accent:#fe9dbf">
+          <div class="vhead"><span class="vdot"></span><h3>Grupo 3</h3></div>
+          <div class="kpis">
+            <div><span>11.410</span><label>compradores</label></div>
+            <div><span>R$ 6.785.856</span><label>GMV</label></div>
+            <div><span>R$ 264.287</span><label>lucro</label></div>
+            <div><span>3.9%</span><label>margem</label></div>
+            <div><span>0.52</span><label>ROI</label></div>
+            <div><span>7.4%</span><label>taxa de cashback</label></div>
+            <div><span>R$ 595</span><label>ticket médio</label></div>
+          </div>
+        </div></div>
+
+
+        <section class="panel tradeoff">
+          <h2><span class="tag">trade-off</span> Crescimento vs. margem</h2>
+          <p>Escalar Grupo 1 (mais lucrativa) em vez de Grupo 3 (maior GMV) troca R$ 1.180.683 de GMV por R$ 140.424 de lucro extra — abre-se mão de R$ 8,41 de GMV para cada R$ 1,00 de lucro ganho.</p>
+          <div class="tradeoff-body">
+            <div class="cambio">
+              <label>Câmbio da decisão</label>
+              <div class="cambio-val">R$ 8,41</div>
+              <small>de GMV abdicado para cada <b>R$ 1,00</b> de lucro a mais<br>
+              ao escalar Grupo 1 em vez de Grupo 3</small>
+            </div>
+            <div class="chartbox to-chart"><canvas id="cTradeoff"></canvas></div>
+          </div>
+          <div class="tgrid">
+            <div><label>Grupo 1 — mais lucrativa (recomendada)</label>
+                 <b>R$ 404.711</b><small>lucro · GMV R$ 5.605.173</small></div>
+            <div><label>Grupo 3 — maior GMV</label>
+                 <b>R$ 264.287</b><small>lucro · GMV R$ 6.785.856</small></div>
+          </div>
+          <div class="caption">O gráfico mostra a <b>troca</b>: escalar a variante mais lucrativa abre mão de uma
+          fatia grande de GMV (barra clara) para ganhar uma fatia menor de lucro (barra vermelha). O câmbio é a razão entre as duas.</div>
+        </section>
+
+
+        <section class="panel achados">
+          <h2><span class="tag">análise</span> Destaques e exceções</h2>
+          <ul class="achados-list"><li>ROI abaixo de 1 em Grupo 2 (ROI 0,96) e Grupo 3 (ROI 0,52): nessas variantes o cashback investido supera o lucro gerado.</li><li>O lucro por comprador cai de forma consistente à medida que o cashback aumenta; níveis mais altos de cashback não se pagaram em rentabilidade.</li><li>A variante mais lucrativa (Grupo 1) não é a de maior GMV (Grupo 3): há trade-off entre margem e crescimento (ver seção específica).</li></ul>
+        </section>
+
+<div class="grid2">
+  <section class="panel"><h2><span class="tag">evolução</span> Lucro acumulado por variante</h2>
+    <div class="chartbox"><canvas id="cAcum"></canvas></div>
+    <div class="caption">Lucro acumulado por variante, obtido pela soma dos resultados diários.</div>
+  </section>
+  <section class="panel"><h2><span class="tag">decisão</span> Lucro por comprador (média diária ± IC95%)</h2>
+    <div class="chartbox"><canvas id="cLpc"></canvas></div>
+    <div class="caption">Média diária do lucro por comprador em cada variante; a barra indica a faixa provável de variação.</div>
+  </section>
+  <section class="panel"><h2><span class="tag">trade-off</span> GMV × Lucro por variante</h2>
+    <div class="chartbox"><canvas id="cGmvLucro"></canvas></div>
+    <div class="caption">Valores totais de GMV e de lucro para cada variante.</div>
+  </section>
+  <section class="panel"><h2><span class="tag">composição</span> Comissão, cashback e lucro</h2>
+    <div class="chartbox"><canvas id="cComp"></canvas></div>
+    <div class="caption">Comissão de cada variante repartida em cashback devolvido e lucro retido.</div>
+  </section>
+</div>
+
+<section class="panel"><h2><span class="tag">resposta ao cashback</span> Nível de cashback × lucro por comprador</h2>
+  <div class="chartbox" style="height:280px"><canvas id="cCurva"></canvas></div>
+  <div class="caption">Variantes ordenadas pela intensidade de cashback (% do GMV devolvido). As barras mostram o cashback; a linha, o lucro por comprador. Evidencia como a rentabilidade unitária responde ao nível de incentivo.</div>
+</section>
+
+<section class="panel"><h2><span class="tag">série</span> Compradores por dia</h2>
+  <div class="chartbox" style="height:240px"><canvas id="cComp2"></canvas></div>
+  <div class="caption">Volume diário de compradores por variante ao longo do teste.</div>
+  <div class="stat">A variante recomendada supera a 2ª colocada em R$ 8,40 de lucro por comprador a cada dia, em média (faixa provável: R$ 6,38 a R$ 10,36) — diferença consistente ao longo do teste.</div>
+</section>
+
+<section class="panel"><h2><span class="tag">qualidade dos dados</span> Em que os números se apoiam</h2>
+  <div class="qbar">
+    <div><b>276</b><small>linhas lidas</small></div>
+    <div><b>276</b><small>linhas válidas</small></div>
+    <div><b>100.0%</b><small>aproveitamento</small></div>
+    <div><b>utf-8-sig</b><small>encoding</small></div>
+  </div>
+  <div class="quality">
+    <div><h4>Linhas descartadas</h4><ul><li>nenhum</li></ul></div>
+    <div><h4>Em quarentena (isoladas)</h4><ul><li>nenhuma</li></ul></div>
+    <div><h4>Observações</h4><ul><li>linhas fora de ordem cronológica no arquivo; foram reordenadas</li></ul></div>
+  </div>
+</section>
+
+<footer>Gerado automaticamente pela skill <b>ab-cashback-analyzer</b> · premissa: alocação de tráfego equilibrada entre variantes (não há coluna de usuários expostos).</footer>
+</div>
+<script>
+const D = {"grupos": ["Grupo 1", "Grupo 2", "Grupo 3"], "cor": {"Grupo 1": "#e81c3c", "Grupo 2": "#302c2c", "Grupo 3": "#fe9dbf"}, "series": {"Grupo 1": {"data": ["2011-01-01", "2011-01-02", "2011-01-03", "2011-01-04", "2011-01-05", "2011-01-06", "2011-01-07", "2011-01-08", "2011-01-09", "2011-01-10", "2011-01-11", "2011-01-12", "2011-01-13", "2011-01-14", "2011-01-15", "2011-01-16", "2011-01-17", "2011-01-18", "2011-01-19", "2011-01-20", "2011-01-21", "2011-01-22", "2011-01-23", "2011-01-24", "2011-01-25", "2011-01-26", "2011-01-27", "2011-01-28", "2011-01-29", "2011-01-30", "2011-01-31", "2011-02-01", "2011-02-02", "2011-02-03", "2011-02-04", "2011-02-05", "2011-02-06", "2011-02-07", "2011-02-08", "2011-02-09", "2011-02-10", "2011-02-11", "2011-02-12", "2011-02-13", "2011-02-14", "2011-02-15", "2011-02-16", "2011-02-17", "2011-02-18", "2011-02-19", "2011-02-20", "2011-02-21", "2011-02-22", "2011-02-23", "2011-02-24", "2011-02-25", "2011-02-26", "2011-02-27", "2011-02-28", "2011-03-01", "2011-03-02", "2011-03-03", "2011-03-04", "2011-03-05", "2011-03-06", "2011-03-07", "2011-03-08", "2011-03-09", "2011-03-10", "2011-03-11", "2011-03-12", "2011-03-13", "2011-03-14", "2011-03-15", "2011-03-16", "2011-03-17", "2011-03-18", "2011-03-19", "2011-03-20", "2011-03-21", "2011-03-22", "2011-03-23", "2011-03-24", "2011-03-25", "2011-03-26", "2011-03-27", "2011-03-28", "2011-03-29", "2011-03-30", "2011-03-31", "2011-04-01", "2011-04-02"], "lucro": [7006.0, 5495.0, 3481.0, 7512.0, 8167.0, 8134.0, 7776.0, 10448.0, 3872.0, 5178.0, 9499.0, 7006.0, 14785.0, 13428.0, 6041.0, 4451.0, 4584.0, 7297.0, 6641.0, 8809.0, 4179.0, 3425.0, 2531.0, 3340.0, 4575.0, 7330.0, 6401.0, 4436.0, 4322.0, 1760.0, 1506.0, 2469.0, 2662.0, 3399.0, 4248.0, 4895.0, 3676.0, 4090.0, 5170.0, 5365.0, 3908.0, 5004.0, 5292.0, 2135.0, 5103.0, 5964.0, 5426.0, 4435.0, 5316.0, 3877.0, 2974.0, 3962.0, 4485.0, 4161.0, 2150.0, 1683.0, 1522.0, 1531.0, 3194.0, 2249.0, 2599.0, 2028.0, 1494.0, 2248.0, 2087.0, 1491.0, 1725.0, 2777.0, 3387.0, 6379.0, 6737.0, 5138.0, 8159.0, 4154.0, 3812.0, 1995.0, 2701.0, 2692.0, 1887.0, 1803.0, 3665.0, 2835.0, 3780.0, 3893.0, 2067.0, 1504.0, 1233.0, 2901.0, 3430.0, 2202.0, 4191.0, 3957.0], "lucro_acumulado": [7006.0, 12501.0, 15982.0, 23494.0, 31661.0, 39795.0, 47571.0, 58019.0, 61891.0, 67069.0, 76568.0, 83574.0, 98359.0, 111787.0, 117828.0, 122279.0, 126863.0, 134160.0, 140801.0, 149610.0, 153789.0, 157214.0, 159745.0, 163085.0, 167660.0, 174990.0, 181391.0, 185827.0, 190149.0, 191909.0, 193415.0, 195884.0, 198546.0, 201945.0, 206193.0, 211088.0, 214764.0, 218854.0, 224024.0, 229389.0, 233297.0, 238301.0, 243593.0, 245728.0, 250831.0, 256795.0, 262221.0, 266656.0, 271972.0, 275849.0, 278823.0, 282785.0, 287270.0, 291431.0, 293581.0, 295264.0, 296786.0, 298317.0, 301511.0, 303760.0, 306359.0, 308387.0, 309881.0, 312129.0, 314216.0, 315707.0, 317432.0, 320209.0, 323596.0, 329975.0, 336712.0, 341850.0, 350009.0, 354163.0, 357975.0, 359970.0, 362671.0, 365363.0, 367250.0, 369053.0, 372718.0, 375553.0, 379333.0, 383226.0, 385293.0, 386797.0, 388030.0, 390931.0, 394361.0, 396563.0, 400754.0, 404711.0], "compradores": [196, 115, 82, 172, 187, 191, 174, 252, 98, 127, 257, 175, 289, 233, 118, 85, 88, 162, 174, 201, 94, 70, 48, 73, 108, 176, 120, 101, 80, 39, 35, 50, 57, 73, 91, 93, 76, 80, 104, 104, 97, 123, 135, 45, 83, 123, 111, 99, 94, 82, 62, 73, 90, 103, 53, 51, 60, 65, 87, 68, 90, 72, 59, 69, 62, 37, 54, 78, 108, 196, 216, 161, 185, 124, 93, 68, 83, 66, 58, 51, 102, 100, 110, 82, 64, 42, 42, 77, 77, 71, 116, 68], "gmv": [93390.0, 68682.0, 43993.0, 94722.0, 102768.0, 101838.0, 97541.0, 131409.0, 48640.0, 64726.0, 118866.0, 87836.0, 185913.0, 167857.0, 75938.0, 55746.0, 57385.0, 91304.0, 83020.0, 110110.0, 52418.0, 43075.0, 32085.0, 41756.0, 57752.0, 91893.0, 80130.0, 55458.0, 54031.0, 21996.0, 18831.0, 30867.0, 33275.0, 42482.0, 53416.0, 61178.0, 46156.0, 51116.0, 64832.0, 67065.0, 48850.0, 63001.0, 66273.0, 26690.0, 63790.0, 74548.0, 67877.0, 55434.0, 66715.0, 48465.0, 37185.0, 49624.0, 56330.0, 69836.0, 35763.0, 28049.0, 25413.0, 25485.0, 53229.0, 37483.0, 43322.0, 33862.0, 24904.0, 37465.0, 34791.0, 24848.0, 28755.0, 46303.0, 56449.0, 115574.0, 122008.0, 93312.0, 148355.0, 70827.0, 63743.0, 33246.0, 45015.0, 44865.0, 31449.0, 30051.0, 61091.0, 47259.0, 63013.0, 64869.0, 34456.0, 25071.0, 20552.0, 48344.0, 57164.0, 36688.0, 70043.0, 65943.0], "cashback": [3267.0, 2060.0, 1358.0, 2907.0, 3138.0, 3068.0, 2954.0, 4007.0, 1478.0, 1942.0, 3576.0, 2656.0, 5665.0, 5036.0, 2312.0, 1681.0, 1728.0, 2746.0, 2491.0, 3303.0, 1587.0, 1313.0, 998.0, 1253.0, 1778.0, 2778.0, 2413.0, 1664.0, 1621.0, 660.0, 565.0, 926.0, 998.0, 1274.0, 1628.0, 1835.0, 1401.0, 1533.0, 1962.0, 2012.0, 1466.0, 1926.0, 1998.0, 801.0, 1914.0, 2236.0, 2040.0, 1663.0, 2023.0, 1454.0, 1116.0, 1497.0, 1711.0, 3521.0, 1784.0, 1402.0, 1273.0, 1272.0, 2661.0, 1874.0, 2166.0, 1697.0, 1245.0, 1873.0, 1740.0, 1242.0, 1438.0, 2316.0, 2822.0, 11535.0, 12174.0, 9331.0, 14836.0, 3637.0, 3200.0, 1662.0, 2251.0, 2243.0, 1572.0, 1503.0, 3055.0, 2363.0, 3151.0, 3243.0, 1723.0, 1254.0, 1028.0, 2417.0, 2858.0, 1834.0, 3514.0, 3297.0]}, "Grupo 2": {"data": ["2011-01-01", "2011-01-02", "2011-01-03", "2011-01-04", "2011-01-05", "2011-01-06", "2011-01-07", "2011-01-08", "2011-01-09", "2011-01-10", "2011-01-11", "2011-01-12", "2011-01-13", "2011-01-14", "2011-01-15", "2011-01-16", "2011-01-17", "2011-01-18", "2011-01-19", "2011-01-20", "2011-01-21", "2011-01-22", "2011-01-23", "2011-01-24", "2011-01-25", "2011-01-26", "2011-01-27", "2011-01-28", "2011-01-29", "2011-01-30", "2011-01-31", "2011-02-01", "2011-02-02", "2011-02-03", "2011-02-04", "2011-02-05", "2011-02-06", "2011-02-07", "2011-02-08", "2011-02-09", "2011-02-10", "2011-02-11", "2011-02-12", "2011-02-13", "2011-02-14", "2011-02-15", "2011-02-16", "2011-02-17", "2011-02-18", "2011-02-19", "2011-02-20", "2011-02-21", "2011-02-22", "2011-02-23", "2011-02-24", "2011-02-25", "2011-02-26", "2011-02-27", "2011-02-28", "2011-03-01", "2011-03-02", "2011-03-03", "2011-03-04", "2011-03-05", "2011-03-06", "2011-03-07", "2011-03-08", "2011-03-09", "2011-03-10", "2011-03-11", "2011-03-12", "2011-03-13", "2011-03-14", "2011-03-15", "2011-03-16", "2011-03-17", "2011-03-18", "2011-03-19", "2011-03-20", "2011-03-21", "2011-03-22", "2011-03-23", "2011-03-24", "2011-03-25", "2011-03-26", "2011-03-27", "2011-03-28", "2011-03-29", "2011-03-30", "2011-03-31", "2011-04-01", "2011-04-02"], "lucro": [6475.0, 3669.0, 3875.0, 5297.0, 7124.0, 6855.0, 6999.0, 8078.0, 3528.0, 4039.0, 7324.0, 5934.0, 12703.0, 8198.0, 4889.0, 2989.0, 4143.0, 7790.0, 7202.0, 6225.0, 3549.0, 3794.0, 1918.0, 3533.0, 4274.0, 6618.0, 4478.0, 3084.0, 2928.0, 2224.0, 2084.0, 2290.0, 2726.0, 4480.0, 4033.0, 2618.0, 2775.0, 3239.0, 3553.0, 3887.0, 4749.0, 5075.0, 3777.0, 2670.0, 2774.0, 5414.0, 8266.0, 3541.0, 4062.0, 3708.0, 3418.0, 3018.0, 3967.0, 3268.0, 2114.0, 2456.0, 2072.0, 1154.0, 3494.0, 1488.0, 1667.0, 1789.0, 1581.0, 1754.0, 2099.0, 1790.0, 2144.0, 1987.0, 2884.0, 6439.0, 8478.0, 5582.0, 6007.0, 3160.0, 3497.0, 2537.0, 3274.0, 3488.0, 2635.0, 1965.0, 2876.0, 3373.0, 3389.0, 1844.0, 2585.0, 1131.0, 1994.0, 2339.0, 3093.0, 2858.0, 2879.0, 2495.0], "lucro_acumulado": [6475.0, 10144.0, 14019.0, 19316.0, 26440.0, 33295.0, 40294.0, 48372.0, 51900.0, 55939.0, 63263.0, 69197.0, 81900.0, 90098.0, 94987.0, 97976.0, 102119.0, 109909.0, 117111.0, 123336.0, 126885.0, 130679.0, 132597.0, 136130.0, 140404.0, 147022.0, 151500.0, 154584.0, 157512.0, 159736.0, 161820.0, 164110.0, 166836.0, 171316.0, 175349.0, 177967.0, 180742.0, 183981.0, 187534.0, 191421.0, 196170.0, 201245.0, 205022.0, 207692.0, 210466.0, 215880.0, 224146.0, 227687.0, 231749.0, 235457.0, 238875.0, 241893.0, 245860.0, 249128.0, 251242.0, 253698.0, 255770.0, 256924.0, 260418.0, 261906.0, 263573.0, 265362.0, 266943.0, 268697.0, 270796.0, 272586.0, 274730.0, 276717.0, 279601.0, 286040.0, 294518.0, 300100.0, 306107.0, 309267.0, 312764.0, 315301.0, 318575.0, 322063.0, 324698.0, 326663.0, 329539.0, 332912.0, 336301.0, 338145.0, 340730.0, 341861.0, 343855.0, 346194.0, 349287.0, 352145.0, 355024.0, 357519.0], "compradores": [200, 118, 127, 181, 230, 202, 211, 276, 130, 136, 275, 207, 354, 235, 138, 89, 92, 204, 205, 210, 114, 107, 66, 81, 132, 233, 123, 95, 83, 55, 59, 61, 68, 103, 115, 86, 88, 94, 97, 138, 134, 160, 142, 81, 101, 152, 155, 106, 104, 104, 99, 92, 97, 106, 65, 78, 85, 49, 86, 71, 65, 63, 59, 66, 45, 46, 69, 70, 104, 211, 247, 181, 180, 107, 105, 81, 95, 93, 65, 73, 86, 106, 96, 66, 71, 42, 62, 73, 78, 72, 84, 68], "gmv": [117726.0, 66707.0, 70457.0, 96620.0, 129517.0, 124278.0, 127242.0, 146874.0, 64141.0, 73439.0, 132871.0, 107889.0, 230953.0, 149045.0, 88895.0, 54633.0, 75341.0, 141624.0, 131103.0, 113178.0, 64540.0, 68983.0, 34882.0, 64224.0, 77696.0, 120327.0, 81418.0, 56077.0, 53236.0, 40423.0, 37887.0, 41635.0, 49576.0, 81441.0, 73753.0, 47965.0, 50458.0, 58900.0, 64590.0, 70671.0, 86358.0, 92264.0, 68662.0, 48555.0, 50433.0, 98450.0, 150288.0, 64379.0, 73186.0, 67408.0, 62150.0, 54862.0, 72128.0, 59428.0, 38425.0, 44658.0, 37619.0, 20995.0, 63527.0, 27050.0, 30322.0, 32529.0, 28750.0, 31810.0, 38175.0, 32558.0, 38978.0, 36140.0, 52426.0, 116514.0, 154149.0, 101489.0, 108532.0, 53192.0, 58431.0, 42282.0, 54576.0, 58485.0, 43917.0, 32940.0, 47860.0, 56916.0, 56468.0, 30728.0, 43079.0, 18858.0, 33227.0, 38993.0, 51547.0, 47634.0, 47982.0, 41569.0], "cashback": [6475.0, 3669.0, 3875.0, 5331.0, 7123.0, 6816.0, 6998.0, 8078.0, 3528.0, 4039.0, 7292.0, 5934.0, 12702.0, 8197.0, 4889.0, 3021.0, 4144.0, 7789.0, 7219.0, 6225.0, 3550.0, 3794.0, 1919.0, 3532.0, 4273.0, 6618.0, 4478.0, 3084.0, 2928.0, 2223.0, 2084.0, 2290.0, 2727.0, 4479.0, 4080.0, 2658.0, 2775.0, 3240.0, 3552.0, 3887.0, 4750.0, 5074.0, 3776.0, 2671.0, 2774.0, 5415.0, 8266.0, 3541.0, 3989.0, 3707.0, 3418.0, 3017.0, 3967.0, 3269.0, 2113.0, 2456.0, 2066.0, 1155.0, 3494.0, 1488.0, 1668.0, 1789.0, 1581.0, 1745.0, 2100.0, 1791.0, 2144.0, 1988.0, 2883.0, 11627.0, 15415.0, 10149.0, 10815.0, 2691.0, 2930.0, 2114.0, 2729.0, 2945.0, 2196.0, 1658.0, 2389.0, 2888.0, 2823.0, 1536.0, 2154.0, 943.0, 1661.0, 1950.0, 2577.0, 2382.0, 2399.0, 2078.0]}, "Grupo 3": {"data": ["2011-01-01", "2011-01-02", "2011-01-03", "2011-01-04", "2011-01-05", "2011-01-06", "2011-01-07", "2011-01-08", "2011-01-09", "2011-01-10", "2011-01-11", "2011-01-12", "2011-01-13", "2011-01-14", "2011-01-15", "2011-01-16", "2011-01-17", "2011-01-18", "2011-01-19", "2011-01-20", "2011-01-21", "2011-01-22", "2011-01-23", "2011-01-24", "2011-01-25", "2011-01-26", "2011-01-27", "2011-01-28", "2011-01-29", "2011-01-30", "2011-01-31", "2011-02-01", "2011-02-02", "2011-02-03", "2011-02-04", "2011-02-05", "2011-02-06", "2011-02-07", "2011-02-08", "2011-02-09", "2011-02-10", "2011-02-11", "2011-02-12", "2011-02-13", "2011-02-14", "2011-02-15", "2011-02-16", "2011-02-17", "2011-02-18", "2011-02-19", "2011-02-20", "2011-02-21", "2011-02-22", "2011-02-23", "2011-02-24", "2011-02-25", "2011-02-26", "2011-02-27", "2011-02-28", "2011-03-01", "2011-03-02", "2011-03-03", "2011-03-04", "2011-03-05", "2011-03-06", "2011-03-07", "2011-03-08", "2011-03-09", "2011-03-10", "2011-03-11", "2011-03-12", "2011-03-13", "2011-03-14", "2011-03-15", "2011-03-16", "2011-03-17", "2011-03-18", "2011-03-19", "2011-03-20", "2011-03-21", "2011-03-22", "2011-03-23", "2011-03-24", "2011-03-25", "2011-03-26", "2011-03-27", "2011-03-28", "2011-03-29", "2011-03-30", "2011-03-31", "2011-04-01", "2011-04-02"], "lucro": [4794.0, 2266.0, 3011.0, 3356.0, 3628.0, 3556.0, 3598.0, 5819.0, 2191.0, 3435.0, 4845.0, 4546.0, 6912.0, 5500.0, 2504.0, 2133.0, 1969.0, 4048.0, 3642.0, 3737.0, 2368.0, 2099.0, 2022.0, 1573.0, 2038.0, 4142.0, 3119.0, 2315.0, 1533.0, 1198.0, 1014.0, 1444.0, 1645.0, 2548.0, 3027.0, 1971.0, 1548.0, 1902.0, 2190.0, 1839.0, 3125.0, 3106.0, 2454.0, 1739.0, 2219.0, 2217.0, 3102.0, 3122.0, 1991.0, 1953.0, 1356.0, 1888.0, 2107.0, 2496.0, 1981.0, 1875.0, 1603.0, 3788.0, 2362.0, 1894.0, 2014.0, 2840.0, 2497.0, 2430.0, 1391.0, 1662.0, 2381.0, 2472.0, 3845.0, 8300.0, 6946.0, 5773.0, 5528.0, 4566.0, 3540.0, 3144.0, 3217.0, 2323.0, 1968.0, 3515.0, 2679.0, 3339.0, 3367.0, 2339.0, 2373.0, 1853.0, 1684.0, 2056.0, 2530.0, 3170.0, 3036.0, 2106.0], "lucro_acumulado": [4794.0, 7060.0, 10071.0, 13427.0, 17055.0, 20611.0, 24209.0, 30028.0, 32219.0, 35654.0, 40499.0, 45045.0, 51957.0, 57457.0, 59961.0, 62094.0, 64063.0, 68111.0, 71753.0, 75490.0, 77858.0, 79957.0, 81979.0, 83552.0, 85590.0, 89732.0, 92851.0, 95166.0, 96699.0, 97897.0, 98911.0, 100355.0, 102000.0, 104548.0, 107575.0, 109546.0, 111094.0, 112996.0, 115186.0, 117025.0, 120150.0, 123256.0, 125710.0, 127449.0, 129668.0, 131885.0, 134987.0, 138109.0, 140100.0, 142053.0, 143409.0, 145297.0, 147404.0, 149900.0, 151881.0, 153756.0, 155359.0, 159147.0, 161509.0, 163403.0, 165417.0, 168257.0, 170754.0, 173184.0, 174575.0, 176237.0, 178618.0, 181090.0, 184935.0, 193235.0, 200181.0, 205954.0, 211482.0, 216048.0, 219588.0, 222732.0, 225949.0, 228272.0, 230240.0, 233755.0, 236434.0, 239773.0, 243140.0, 245479.0, 247852.0, 249705.0, 251389.0, 253445.0, 255975.0, 259145.0, 262181.0, 264287.0], "compradores": [248, 145, 153, 185, 219, 227, 216, 288, 134, 193, 278, 259, 353, 274, 152, 108, 109, 221, 190, 238, 147, 103, 90, 76, 141, 255, 170, 119, 80, 72, 61, 66, 81, 105, 120, 104, 83, 112, 118, 108, 160, 184, 154, 89, 111, 120, 157, 152, 101, 103, 66, 106, 96, 89, 60, 59, 59, 63, 69, 56, 73, 92, 75, 57, 41, 42, 54, 76, 91, 236, 238, 186, 175, 139, 94, 89, 106, 69, 68, 80, 91, 87, 99, 63, 69, 51, 49, 72, 70, 88, 74, 61], "gmv": [141012.0, 73975.0, 100341.0, 111136.0, 120033.0, 117458.0, 119346.0, 193571.0, 72000.0, 114203.0, 160590.0, 151533.0, 228467.0, 182005.0, 82891.0, 70639.0, 65637.0, 134417.0, 121113.0, 121175.0, 77599.0, 69964.0, 66291.0, 51876.0, 66912.0, 138071.0, 103777.0, 77000.0, 51091.0, 39946.0, 33810.0, 48126.0, 53158.0, 84694.0, 100423.0, 65391.0, 51203.0, 63422.0, 72426.0, 61287.0, 104162.0, 103526.0, 80810.0, 57943.0, 71688.0, 73416.0, 103396.0, 104064.0, 65467.0, 65100.0, 45180.0, 62468.0, 70230.0, 58004.0, 28881.0, 26856.0, 23737.0, 54171.0, 33743.0, 27133.0, 29014.0, 40695.0, 35669.0, 34932.0, 19950.0, 23744.0, 34023.0, 35315.0, 55155.0, 144144.0, 126236.0, 104965.0, 100518.0, 77680.0, 58948.0, 52388.0, 54055.0, 38731.0, 34263.0, 58570.0, 44645.0, 55650.0, 56110.0, 38991.0, 39552.0, 30893.0, 28075.0, 34267.0, 42171.0, 52836.0, 50600.0, 35087.0], "cashback": [10717.0, 5871.0, 8027.0, 8869.0, 9576.0, 9364.0, 9530.0, 15474.0, 5729.0, 9127.0, 12820.0, 12123.0, 18219.0, 14521.0, 6614.0, 5637.0, 5251.0, 10738.0, 9680.0, 9592.0, 6168.0, 5597.0, 5270.0, 4133.0, 5322.0, 11046.0, 8297.0, 6155.0, 4087.0, 3196.0, 2705.0, 3850.0, 4202.0, 6768.0, 8019.0, 5222.0, 4084.0, 5074.0, 5777.0, 4903.0, 8333.0, 8282.0, 6435.0, 4635.0, 5667.0, 5859.0, 8272.0, 8325.0, 5237.0, 5208.0, 3614.0, 4983.0, 5618.0, 3884.0, 1196.0, 1079.0, 1008.0, 2171.0, 1350.0, 1091.0, 1178.0, 1636.0, 1427.0, 1412.0, 804.0, 950.0, 1361.0, 1413.0, 2222.0, 14042.0, 12624.0, 10497.0, 10052.0, 3979.0, 2944.0, 2619.0, 2729.0, 1937.0, 1801.0, 2928.0, 2232.0, 2782.0, 2805.0, 1950.0, 1978.0, 1545.0, 1404.0, 1713.0, 2109.0, 2642.0, 2530.0, 1754.0]}}, "por_variante": {"Grupo 1": {"dias": 92.0, "compradores": 9633.0, "gmv": 5605173.0, "comissao": 638135.0, "cashback": 233424.0, "lucro": 404711.0, "roi": 1.73, "margem_pct": 7.22, "ticket_medio": 581.87, "cashback_por_comprador": 24.23, "lucro_por_comprador": 42.01, "cashback_pct_gmv": 4.16, "take_rate_pct": 11.38}, "Grupo 2": {"dias": 92.0, "compradores": 10814.0, "gmv": 6423096.0, "comissao": 728178.0, "cashback": 370659.0, "lucro": 357519.0, "roi": 0.96, "margem_pct": 5.57, "ticket_medio": 593.96, "cashback_por_comprador": 34.28, "lucro_por_comprador": 33.06, "cashback_pct_gmv": 5.77, "take_rate_pct": 11.34}, "Grupo 3": {"dias": 92.0, "compradores": 11410.0, "gmv": 6785856.0, "comissao": 767887.0, "cashback": 503600.0, "lucro": 264287.0, "roi": 0.52, "margem_pct": 3.89, "ticket_medio": 594.73, "cashback_por_comprador": 44.14, "lucro_por_comprador": 23.16, "cashback_pct_gmv": 7.42, "take_rate_pct": 11.32}}, "ic": {"Grupo 1": {"media": 41.657436574569566, "ic95_baixo": 39.99789796836927, "ic95_alto": 43.318381354940854}, "Grupo 2": {"media": 33.27029456030915, "ic95_baixo": 32.19977509696917, "ic95_alto": 34.38803112547426}, "Grupo 3": {"media": 25.599530984793308, "ic95_baixo": 23.742586371828562, "ic95_alto": 27.495806373129426}}, "curva": [{"grupo": "Grupo 1", "cashback_pct_gmv": 4.16, "cashback_por_comprador": 24.23, "lucro_por_comprador": 41.66}, {"grupo": "Grupo 2", "cashback_pct_gmv": 5.77, "cashback_por_comprador": 34.28, "lucro_por_comprador": 33.27}, {"grupo": "Grupo 3", "cashback_pct_gmv": 7.42, "cashback_por_comprador": 44.14, "lucro_por_comprador": 25.6}]};
+const TO = {"gmv_abdicado": 1180683.0, "lucro_a_mais": 140424.0, "cambio": 8.41, "mais_lucrativa": "Grupo 1", "maior_gmv": "Grupo 3"};
+const F = new Intl.NumberFormat('pt-BR');
+const BRL = v => 'R$ ' + F.format(Math.round(v));
+const BRL2 = v => 'R$ ' + v.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+Chart.defaults.font.family = 'Inter, sans-serif';
+Chart.defaults.color = '#6b6666';
+const grid = {color:'#f0e6ea'};
+
+// lucro acumulado
+new Chart(cAcum, {type:'line', data:{
+  labels: D.series[D.grupos[0]].data,
+  datasets: D.grupos.map(g=>({label:g, data:D.series[g].lucro_acumulado, borderColor:D.cor[g],
+    backgroundColor:D.cor[g], tension:.25, pointRadius:0, borderWidth:2.5}))
+}, options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+  plugins:{legend:{position:'bottom'},tooltip:{callbacks:{label:c=>c.dataset.label+': '+BRL(c.parsed.y)}}},
+  scales:{y:{grid,ticks:{callback:v=>BRL(v)}},x:{grid:{display:false},ticks:{maxTicksLimit:8}}}}});
+
+// lucro por comprador com IC (barras + erro desenhado)
+const lpcMean = D.grupos.map(g=>D.ic[g].media);
+const lpcLo = D.grupos.map(g=>D.ic[g].ic95_baixo);
+const lpcHi = D.grupos.map(g=>D.ic[g].ic95_alto);
+const errorBars = {id:'err', afterDatasetsDraw(c){const {ctx,scales:{y}}=c;const meta=c.getDatasetMeta(0);
+  ctx.save();ctx.strokeStyle='#302c2c';ctx.lineWidth=1.5;
+  meta.data.forEach((bar,i)=>{const x=bar.x;const yl=y.getPixelForValue(lpcLo[i]);const yh=y.getPixelForValue(lpcHi[i]);
+    ctx.beginPath();ctx.moveTo(x,yh);ctx.lineTo(x,yl);ctx.moveTo(x-5,yh);ctx.lineTo(x+5,yh);
+    ctx.moveTo(x-5,yl);ctx.lineTo(x+5,yl);ctx.stroke();});ctx.restore();}};
+new Chart(cLpc, {type:'bar', data:{labels:D.grupos,
+  datasets:[{label:'Lucro por comprador (R$/dia)', data:lpcMean,
+    backgroundColor:D.grupos.map(g=>D.cor[g])}]},
+  options:{responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>BRL2(c.parsed.y)+
+    ' [faixa provável: '+BRL2(lpcLo[c.dataIndex])+' a '+BRL2(lpcHi[c.dataIndex])+']'}}},
+  scales:{y:{grid,ticks:{callback:v=>'R$ '+v}},x:{grid:{display:false}}}}, plugins:[errorBars]});
+
+// GMV x Lucro
+new Chart(cGmvLucro, {type:'bar', data:{labels:D.grupos, datasets:[
+  {label:'GMV', data:D.grupos.map(g=>D.por_variante[g].gmv), backgroundColor:'#fe9dbf'},
+  {label:'Lucro', data:D.grupos.map(g=>D.por_variante[g].lucro), backgroundColor:'#e81c3c'}]},
+  options:{responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{position:'bottom'},tooltip:{callbacks:{label:c=>c.dataset.label+': '+BRL(c.parsed.y)}}},
+  scales:{y:{grid,ticks:{callback:v=>BRL(v)}},x:{grid:{display:false}}}}});
+
+// composição comissão/cashback/lucro (empilhado)
+new Chart(cComp, {type:'bar', data:{labels:D.grupos, datasets:[
+  {label:'Cashback', data:D.grupos.map(g=>D.por_variante[g].cashback), backgroundColor:'#fe9dbf'},
+  {label:'Lucro', data:D.grupos.map(g=>D.por_variante[g].lucro), backgroundColor:'#e81c3c'}]},
+  options:{responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{position:'bottom'},tooltip:{callbacks:{label:c=>c.dataset.label+': '+BRL(c.parsed.y),
+    footer:items=>{const g=D.grupos[items[0].dataIndex];return 'Comissão total: '+BRL(D.por_variante[g].comissao)}}}},
+  scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,grid,ticks:{callback:v=>BRL(v)}}}}});
+
+// compradores por dia
+new Chart(cComp2, {type:'line', data:{labels:D.series[D.grupos[0]].data,
+  datasets:D.grupos.map(g=>({label:g,data:D.series[g].compradores,borderColor:D.cor[g],
+    backgroundColor:D.cor[g],tension:.25,pointRadius:0,borderWidth:2}))},
+  options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+  plugins:{legend:{position:'bottom'}},
+  scales:{y:{grid},x:{grid:{display:false},ticks:{maxTicksLimit:8}}}}});
+
+// gráfico dedicado do trade-off: a TROCA (GMV abdicado vs lucro ganho)
+if (TO && document.getElementById('cTradeoff')) {
+  new Chart(cTradeoff, {type:'bar', data:{
+    labels:['GMV abdicado','Lucro ganho'],
+    datasets:[{data:[TO.gmv_abdicado, TO.lucro_a_mais],
+      backgroundColor:['#fe9dbf','#e81c3c'], borderRadius:6, barPercentage:.6}]},
+    options:{indexAxis:'y', responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{display:false}, title:{display:true,align:'start',
+      text:'O que você troca ao escalar '+TO.mais_lucrativa+' em vez de '+TO.maior_gmv,
+      color:'#6b6666', font:{size:11, weight:'normal'}},
+      tooltip:{callbacks:{label:c=>BRL(c.parsed.x)}}},
+    scales:{x:{grid, ticks:{callback:v=>BRL(v)}}, y:{grid:{display:false}}}}});
+}
+// curva de resposta ao cashback: barras = % cashback/GMV, linha = lucro por comprador
+if (D.curva && D.curva.length) {
+  const labels = D.curva.map(p=>p.grupo);
+  new Chart(cCurva, {data:{labels, datasets:[
+    {type:'bar', label:'Cashback (% do GMV)', data:D.curva.map(p=>p.cashback_pct_gmv),
+      backgroundColor:'#fe9dbf', yAxisID:'y1', borderRadius:6, order:2},
+    {type:'line', label:'Lucro por comprador', data:D.curva.map(p=>p.lucro_por_comprador),
+      borderColor:'#e81c3c', backgroundColor:'#e81c3c', yAxisID:'y', tension:.2,
+      borderWidth:3, pointRadius:4, order:1}
+  ]}, options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{position:'bottom'},tooltip:{callbacks:{label:c=>c.dataset.yAxisID==='y'
+      ? 'Lucro/comprador: '+BRL2(c.parsed.y) : 'Cashback: '+c.parsed.y.toFixed(1).replace('.',',')+'% do GMV'}}},
+    scales:{
+      y:{position:'left',grid,title:{display:true,text:'Lucro por comprador (R$)'},ticks:{callback:v=>'R$ '+v}},
+      y1:{position:'right',grid:{drawOnChartArea:false},title:{display:true,text:'% cashback do GMV'},ticks:{callback:v=>v+'%'}},
+      x:{grid:{display:false}}
+    }}});
+}
+</script></body></html>
