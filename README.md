@@ -1,6 +1,6 @@
 # Growth AI-Native | Méliuz
 
-Solução reutilizável para análise de testes A/B de cashback. Recebe o CSV de um teste, saneia os dados, calcula métricas de negócio, valida a diferença estatisticamente, produz um dashboard e um relatório apresentáveis, e registra o teste numa planilha de acompanhamento — respondendo a uma pergunta:
+Solução reutilizável para análise de testes A/B de cashback. Recebe o CSV de um teste, saneia os dados, calcula métricas de negócio, valida a diferença estatisticamente, produz um dashboard e um relatório apresentáveis, e registra o teste numa planilha de acompanhamento — respondendo à pergunta:
 
 > **Dado este teste A/B, qual variante de cashback devemos escalar para 100% do tráfego?**
 
@@ -185,8 +185,8 @@ growth-ai-native-meliuz/
 
 Cada teste vira uma linha no `registro_mestre.csv` (a fonte de verdade) e na planilha Google Sheets. Como o conector cria a planilha mas não edita células de uma já existente, o append contínuo com **link fixo** é feito por um Web App de Google Apps Script (`assets/apps_script_webhook.gs`): a solução envia a linha por POST e o script a acrescenta na planilha, preservando o mesmo link.
 
-**Link da planilha:** _(inserir o link público com acesso de leitura)_
+**Link da planilha:** _ https://docs.google.com/spreadsheets/d/1j5qx0ajboaMENpNNLaj0aN5xUcz_IMQr32Pf-XdD3bI/edit?usp=sharing _
 
 ---
 
-_Solução desenvolvida como parte do processo seletivo para Estágio de Growth AI-Native no Méliuz._
+
