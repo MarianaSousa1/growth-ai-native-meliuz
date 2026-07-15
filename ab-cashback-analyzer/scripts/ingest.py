@@ -1,18 +1,3 @@
-"""
-ingest.py — Leitura e saneamento robusto de datasets de teste A/B de cashback.
-
-Filosofia: o arquivo de entrada é SEMPRE tratado como potencialmente sujo.
-Nunca imputamos valores nem "consertamos" um número no escuro. Toda linha que
-não passa numa checagem é DESCARTADA ou colocada em QUARENTENA, e o motivo fica
-registrado no relatório de qualidade — porque quem decide precisa saber em que
-fração dos dados a decisão se apoia.
-
-Saída: um objeto CleanResult com
-  - df        : DataFrame limpo, tipado e ordenado (só linhas confiáveis)
-  - quality   : dicionário serializável com o relatório de qualidade
-Uso via CLI:
-  python ingest.py <caminho_csv>            # imprime o relatório de qualidade em JSON
-"""
 
 import sys, json, re, unicodedata
 from dataclasses import dataclass, field
