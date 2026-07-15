@@ -1,14 +1,4 @@
-"""
-report.py — Gera os entregáveis visuais a partir da saída de analyze.run():
-  1) Dashboard HTML interativo, autocontido (Chart.js via CDN), cores Méliuz.
-  2) PDF derivado compacto (1–2 páginas) via matplotlib + reportlab.
 
-Identidade visual (paleta Méliuz):
-  grafite  #302c2c   vermelho #e81c3c   rosa #fe9dbf   rosa claro #ffe8f3   branco #ffffff
-
-Uso via CLI:
-  python report.py <arquivo.csv> <dir_saida> ["Nome do teste"]
-"""
 
 import sys, os, json, html
 import numpy as np
