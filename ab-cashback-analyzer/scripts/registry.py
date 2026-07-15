@@ -1,20 +1,3 @@
-"""
-registry.py — Monta a linha de registro consolidado de um teste e mantém um
-CSV mestre local como fonte de verdade do histórico.
-
-Por que um CSV mestre local: o conector do Google Drive cria planilhas mas não
-edita células de uma planilha existente, e a API do Google está fora da lista de
-domínios liberados do sandbox. Então o histórico vive aqui, versionado, e a cada
-teste a skill sobe/atualiza a planilha Google a partir deste CSV. Assim o
-"cada teste = uma linha" nunca se perde, independente do conector.
-
-Colunas (mínimo pedido + contexto útil para acompanhamento):
-  Data da análise | Nome do teste | Descrição | Parceiro | Período | Variantes |
-  Métrica de decisão | Resultado | Decisão | Confiança | Alertas de qualidade
-
-Uso via CLI:
-  python registry.py <arquivo.csv> "Nome do teste" "Descrição" [caminho_csv_mestre]
-"""
 
 import sys, os, csv, io
 from datetime import date
